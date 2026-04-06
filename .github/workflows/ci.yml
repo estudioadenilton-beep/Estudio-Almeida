@@ -56,7 +56,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Executar ESLint
         run: npm run lint
@@ -79,7 +79,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Executar testes com cobertura
         # Variáveis de ambiente para testes (valores mock — nunca usar prod aqui)
@@ -119,7 +119,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       - name: Build de produção
         env:
