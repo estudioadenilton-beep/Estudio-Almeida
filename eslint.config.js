@@ -17,6 +17,11 @@ export default defineConfig([
     plugins: {
       react: reactPlugin,
     },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: {
