@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import verificarPix from '../../../../api/verificar-pix';
+import verificarPix from '../../../api/verificar-pix';
 
 vi.mock('@upstash/ratelimit', async (importOriginal) => {
   const actual = await importOriginal();

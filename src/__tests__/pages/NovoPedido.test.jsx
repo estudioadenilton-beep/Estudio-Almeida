@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import NovoPedido from '../../../pages/NovoPedido';
-import { AuthProvider } from '../../../contexts/AuthContext';
-import * as pedidosService from '../../../services/pedidos';
+import NovoPedido from '../../pages/NovoPedido';
+import { AuthProvider } from '../../contexts/AuthContext';
+import * as pedidosService from '../../services/pedidos';
 
-vi.mock('../../../lib/supabase', () => ({
+vi.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
       getSession: vi.fn().mockResolvedValue({ data: { session: { user: { id: 1 } } } }),
@@ -14,7 +14,7 @@ vi.mock('../../../lib/supabase', () => ({
   }
 }));
 
-vi.mock('../../../services/pedidos', () => ({
+vi.mock('../../services/pedidos', () => ({
   createPedido: vi.fn().mockResolvedValue({ data: { id: 123 }, error: null }),
   updatePedido: vi.fn(),
 }));
@@ -52,6 +52,11 @@ describe('NovoPedido.jsx Integration Test', () => {
     
     fireEvent.change(screen.getByPlaceholderText(/Ex: Comercial Supermercado Verão 2024/), { target: { value: 'Comercial Teste' } });
     
+    // Agnada a inicialização do AuthContext
+    await waitFor(() => {
+       // apenas força o next-tick do event loop para resolver a mock de Auth
+    });
+
     // Submetendo
     fireEvent.submit(screen.getByRole('button', { name: /solicitar proposta/i }));
     

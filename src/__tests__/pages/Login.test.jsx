@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import Login from '../../../pages/Login';
-import { supabase } from '../../../lib/supabase';
-import { AuthProvider } from '../../../contexts/AuthContext';
+import Login from '../../pages/Login';
+import { supabase } from '../../lib/supabase';
+import { AuthProvider } from '../../contexts/AuthContext';
 
-vi.mock('../../../lib/supabase', () => ({
+vi.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: vi.fn(),
@@ -45,7 +45,7 @@ describe('Login.jsx Integration Test', () => {
     fireEvent.submit(screen.getByRole('button', { name: /entrar/i }));
     
     await waitFor(() => {
-      expect(screen.getByText('E-mail inválido')).toBeInTheDocument();
+      expect(screen.getByText('Formato de e-mail inválido')).toBeInTheDocument();
     });
     
     expect(supabase.auth.signInWithPassword).not.toHaveBeenCalled();

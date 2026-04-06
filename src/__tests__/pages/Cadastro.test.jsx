@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import Cadastro from '../../../pages/Cadastro';
-import { supabase } from '../../../lib/supabase';
-import { AuthProvider } from '../../../contexts/AuthContext';
+import Cadastro from '../../pages/Cadastro';
+import { supabase } from '../../lib/supabase';
+import { AuthProvider } from '../../contexts/AuthContext';
 
-vi.mock('../../../lib/supabase', () => ({
+vi.mock('../../lib/supabase', () => ({
   supabase: {
     auth: {
       signUp: vi.fn(),

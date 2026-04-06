@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import waitForPix from '../../../../api/criar-pix';
+import waitForPix from '../../../api/criar-pix';
 
 // Mock do envio para Upstash
 vi.mock('@upstash/ratelimit', () => {
