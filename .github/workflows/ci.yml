@@ -151,14 +151,14 @@ jobs:
   deploy:
     name: 🚀 Deploy Vercel
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     # Deploy apenas em push para main ou develop (não em PRs)
     needs: build
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-      url: ${{ steps.deploy.outputs.url }}
+      url: ${{ steps.deploy.outputs.preview-url }}
 
     steps:
       - name: Checkout código
@@ -170,30 +170,45 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
-      - name: Instalar Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Pull configurações do Vercel
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Instalar dependências
+        run: npm install
 
       - name: Build do projeto
         env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_APP_URL: ${{ secrets.VITE_APP_URL }}
+          VITE_APP_ENV: production
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_APP_VERSION: ${{ github.sha }}
+        run: npm run build
 
-      - name: Deploy para Vercel
+      - name: Deploy para Vercel (Produção)
+        if: github.ref == 'refs/heads/main'
         id: deploy
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
+
+      - name: Deploy para Vercel (Preview/Staging)
+        if: github.ref == 'refs/heads/develop'
+        id: deploy-preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+
+      - name: Exibir URL do deploy
         run: |
-          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "✅ Deploy concluído: $URL"
+          echo "✅ Deploy concluído!"
+          echo "URL Produção: ${{ steps.deploy.outputs.preview-url }}"
+          echo "URL Preview:  ${{ steps.deploy-preview.outputs.preview-url }}"
 
       - name: Comentar URL de preview em PRs
         if: github.event_name == 'pull_request'
@@ -204,7 +219,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 **Preview deployado:** ${{ steps.deploy.outputs.url }}`
+              body: `🚀 **Preview deployado:** ${{ steps.deploy-preview.outputs.preview-url }}`
             })
 
   # ── JOB 5: Security Audit ───────────────────────────────────────────────────
