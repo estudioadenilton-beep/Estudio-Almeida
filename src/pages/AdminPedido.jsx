@@ -169,7 +169,7 @@ const AdminPedido = () => {
                     </div>
                     <div>
                         <p className="font-label text-[0.6rem] text-primary uppercase tracking-widest font-bold mb-1">Roteiro / Texto</p>
-                        <p className="text-secondary text-sm leading-relaxed bg-black/20 p-4 rounded border border-white/5 italic">"{pedido.texto_roteiro || pedido.descricao}"</p>
+                        <p className="text-secondary text-sm leading-relaxed bg-black/20 p-4 rounded border border-white/5 italic">&quot;{pedido.texto_roteiro || pedido.descricao}&quot;</p>
                     </div>
 
                     {pedido.arquivos_guia_urls && pedido.arquivos_guia_urls.length > 0 && (

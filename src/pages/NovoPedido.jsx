@@ -102,7 +102,7 @@ const NovoPedido = () => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${userId}/${pedidoId}/${Math.random().toString(36).substring(7)}.${fileExt}`;
         
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
           .from('arquivos-pedidos')
           .upload(fileName, file);
 

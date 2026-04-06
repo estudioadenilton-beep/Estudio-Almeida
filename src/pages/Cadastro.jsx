@@ -43,12 +43,12 @@ const Cadastro = () => {
 
       setSuccessMessage('Cadastro concluído! Redirecionando para login...');
       setTimeout(() => navigate('/login'), 2500);
-    } catch (err) {
+    } catch {
       setError('Ocorreu um erro inesperado. Tente novamente.');
     }
   };
 
-  const onError = (errors) => {
+  const onError = () => {
     // Tratamento de erro silencioso em produção
   };
 

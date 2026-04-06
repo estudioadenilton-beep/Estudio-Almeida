@@ -61,7 +61,7 @@ export const useAdminAuth = () => {
 
       setVerifying(false);
       return true;
-    } catch (err) {
+    } catch {
       setError('Erro de conexão com o servidor.');
       setVerifying(false);
       return false;
@@ -87,7 +87,7 @@ export const useAdminAuth = () => {
           }
         );
       }
-    } catch (err) {
+    } catch {
       // Se falhar revoke, signOut garante que o usuário perde acesso local
     }
     await signOut();

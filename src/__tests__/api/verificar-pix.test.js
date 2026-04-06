@@ -59,7 +59,7 @@ describe('API Route: GET /api/verificar-pix', () => {
   });
 
   it('deve retornar status approved em sucesso', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         id: '123456789',

@@ -1,0 +1,13 @@
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\AdminPedido.jsx
+  172:132  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  172:175  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Pedido.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Services.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+Ô£û 4 problems (4 errors, 0 warnings)
+

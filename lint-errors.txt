@@ -1,0 +1,78 @@
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\api\criar-pix.js
+  28:22  error  'pending' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  28:49  error  'reset' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\api\verificar-pix.js
+  28:22  error  'pending' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  28:49  error  'reset' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\components\layout\Header.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\components\shared\BentoCard.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\components\shared\HeroSlider.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\components\shared\ScrollReveal.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\contexts\AuthContext.jsx
+  96:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\hooks\useAdminAuth.js
+  64:14  error  'err' is defined but never used  no-unused-vars
+  90:14  error  'err' is defined but never used  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\AdminDashboard.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\AdminLogin.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\AdminPedido.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Cadastro.jsx
+   4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  46:14  error  'err' is defined but never used                                                no-unused-vars
+  51:20  error  'errors' is defined but never used                                             no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Dashboard.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\EsqueciSenha.jsx
+   5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  40:14  error  'err' is defined but never used                                                no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Login.jsx
+   4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  39:14  error  'err' is defined but never used                                                no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\NotFound.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\NovoPedido.jsx
+    5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+  105:17  error  'data' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  201:52  error  'Icon' is defined but never used                                                      no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Pedido.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Portfolio.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\RedefinirSenha.jsx
+   5:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  48:14  error  'err' is defined but never used                                                no-unused-vars
+
+C:\Users\Usu├írio\OneDrive\Desktop\Nova pasta\src\pages\Services.jsx
+   2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   8:64  error  'Icon' is defined but never used                                               no-unused-vars
+  46:57  error  'Icon' is defined but never used                                               no-unused-vars
+
+Ô£û 33 problems (33 errors, 0 warnings)
+

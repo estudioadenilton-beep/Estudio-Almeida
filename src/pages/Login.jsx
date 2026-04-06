@@ -36,7 +36,7 @@ const Login = () => {
       }
 
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       setAuthError('Ocorreu um erro ao tentar entrar. Tente novamente.');
     }
   };

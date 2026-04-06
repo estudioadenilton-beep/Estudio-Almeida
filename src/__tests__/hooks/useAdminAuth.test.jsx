@@ -51,14 +51,14 @@ const wrapper = ({ children }) => <>{children}</>;
 beforeEach(() => {
   vi.clearAllMocks();
   // Reseta fetch global antes de cada teste
-  global.fetch = vi.fn();
+  globalThis.fetch = vi.fn();
 });
 
 // ─── verifyAdminSecret ────────────────────────────────────────────────────────
 describe('verifyAdminSecret()', () => {
   it('retorna true quando a secret é válida e refresh de sessão funciona', async () => {
     // Simula Edge Function respondendo com sucesso
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ message: 'Admin verified' }),
     });
@@ -76,7 +76,7 @@ describe('verifyAdminSecret()', () => {
   });
 
   it('retorna false e seta error quando a secret é inválida', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: false,
       json: () => Promise.resolve({ error: 'Secret inválida' }),
     });
@@ -94,7 +94,7 @@ describe('verifyAdminSecret()', () => {
   });
 
   it('retorna false e seta erro de conexão quando fetch lança exceção', async () => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useAdminAuth(), { wrapper });
 
@@ -109,7 +109,7 @@ describe('verifyAdminSecret()', () => {
 
   it('seta verifying=true durante a requisição e false após', async () => {
     let resolvePromise;
-    global.fetch = vi.fn().mockReturnValue(
+    globalThis.fetch = vi.fn().mockReturnValue(
       new Promise((resolve) => {
         resolvePromise = () =>
           resolve({
@@ -158,7 +158,7 @@ describe('verifyAdminSecret()', () => {
 // ─── revokeAdmin ──────────────────────────────────────────────────────────────
 describe('revokeAdmin()', () => {
   it('chama revoke-admin e depois signOut', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ message: 'Revoked' }),
     });
@@ -169,7 +169,7 @@ describe('revokeAdmin()', () => {
       await result.current.revokeAdmin();
     });
 
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toHaveBeenCalledWith(
       expect.stringContaining('revoke-admin'),
       expect.objectContaining({ method: 'POST' })
     );
@@ -177,7 +177,7 @@ describe('revokeAdmin()', () => {
   });
 
   it('ainda chama signOut mesmo se revoke falhar', async () => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useAdminAuth(), { wrapper });
 

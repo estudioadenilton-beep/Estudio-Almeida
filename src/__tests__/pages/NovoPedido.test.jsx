@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import NovoPedido from '../../../pages/NovoPedido';
-import { supabase } from '../../../lib/supabase';
 import { AuthProvider } from '../../../contexts/AuthContext';
 import * as pedidosService from '../../../services/pedidos';
 

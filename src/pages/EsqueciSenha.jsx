@@ -37,7 +37,7 @@ const EsqueciSenha = () => {
       }
 
       setSuccess(true);
-    } catch (err) {
+    } catch {
       setError('Ocorreu um erro ao tentar enviar o e-mail. Tente novamente.');
     }
   };

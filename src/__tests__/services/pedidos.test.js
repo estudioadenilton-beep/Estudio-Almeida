@@ -20,12 +20,10 @@ vi.mock('@/lib/supabase', () => ({
 import { supabase } from '@/lib/supabase';
 import {
   fetchClientePedidos,
-  fetchAllPedidos,
   fetchPedidoById,
   createPedido,
   updatePedido,
   ocultarPedido,
-  deleteAllPedidos,
   subscribeToPedidos,
   unsubscribeChannel,
 } from '@/services/pedidos';

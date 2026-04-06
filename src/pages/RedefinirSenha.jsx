@@ -45,7 +45,7 @@ const RedefinirSenha = () => {
       setTimeout(() => {
         navigate('/login');
       }, 3000);
-    } catch (err) {
+    } catch {
       setError('Ocorreu um erro ao tentar redefinir a senha. Tente novamente.');
     }
   };

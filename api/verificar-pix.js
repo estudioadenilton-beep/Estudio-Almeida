@@ -1,3 +1,4 @@
+
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
 
   try {
     // Aplicar rate limit
-    const { success, pending, limit, remaining, reset } = await ratelimit.limit(`ratelimit_verificar_pix_${ip}`);
+    const { success, limit, remaining } = await ratelimit.limit(`ratelimit_verificar_pix_${ip}`);
     
     // Adicionar headers auxiliares
     res.setHeader('X-RateLimit-Limit', limit);

@@ -35,7 +35,7 @@ vi.mock('@upstash/redis', () => ({
   Redis: class { constructor() {} }
 }));
 
-describe('API Route: POST /api/criar-pix', () =>绩
+describe('API Route: POST /api/criar-pix', () => {
   
   beforeEach(() => {
     vi.clearAllMocks();
