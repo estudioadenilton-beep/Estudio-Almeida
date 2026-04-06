@@ -1,0 +1,248 @@
+# ============================================================
+# Estúdio Almeida — CI/CD Pipeline
+# GitHub Actions
+# ============================================================
+#
+# FLUXO:
+#   Push/PR em qualquer branch → Lint + Test + Build
+#   Push em 'main' → ↑ + Deploy para Vercel (produção)
+#   Push em 'develop' → ↑ + Deploy para Vercel (preview)
+#
+# SECRETS NECESSÁRIOS (configurar em Settings > Secrets):
+#   VERCEL_TOKEN        → Token da conta Vercel
+#   VERCEL_ORG_ID       → ID da organização no Vercel
+#   VERCEL_PROJECT_ID   → ID do projeto no Vercel
+#   VITE_SUPABASE_URL   → URL do projeto Supabase (produção)
+#   VITE_SUPABASE_ANON_KEY → Chave anon do Supabase (produção)
+#   VITE_SENTRY_DSN     → DSN do projeto no Sentry
+
+name: CI/CD — Estúdio Almeida
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+    types: [opened, synchronize, reopened]
+
+# Cancela runs anteriores do mesmo branch/PR para economizar recursos
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# ─── JOBS ─────────────────────────────────────────────────────────────────────
+
+jobs:
+  # ── JOB 1: Lint ─────────────────────────────────────────────────────────────
+  lint:
+    name: 🔍 ESLint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # Cache de dependências para acelerar runs futuros
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar ESLint
+        run: npm run lint
+
+  # ── JOB 2: Testes ───────────────────────────────────────────────────────────
+  test:
+    name: 🧪 Vitest (Unit + Integration)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: lint  # Só roda se lint passar
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes com cobertura
+        # Variáveis de ambiente para testes (valores mock — nunca usar prod aqui)
+        env:
+          VITE_SUPABASE_URL: https://test.supabase.co
+          VITE_SUPABASE_ANON_KEY: test-anon-key-mock
+          VITE_APP_URL: http://localhost:5173
+          VITE_APP_ENV: test
+          VITE_SENTRY_DSN: ''
+        run: npm run test:coverage
+
+      - name: Upload relatório de cobertura para Codecov
+        # Opcional: integração com codecov.io para PR badges
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false  # Não bloqueia o pipeline se Codecov falhar
+          verbose: false
+
+  # ── JOB 3: Build ────────────────────────────────────────────────────────────
+  build:
+    name: 🏗️ Build de Produção
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: test  # Só builda se testes passarem
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build de produção
+        env:
+          # Usa secrets reais para o build
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_APP_URL: ${{ secrets.VITE_APP_URL }}
+          VITE_APP_ENV: production
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_APP_VERSION: ${{ github.sha }}
+        run: npm run build
+
+      - name: Verificar tamanho do bundle
+        run: |
+          echo "=== Tamanho dos arquivos gerados ==="
+          du -sh dist/
+          find dist -name "*.js" -exec ls -lh {} \; | awk '{print $5, $9}'
+          echo "=== Arquivos maiores que 500KB ==="
+          find dist -name "*.js" -size +500k -exec ls -lh {} \;
+
+      - name: Upload do artifact de build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+          retention-days: 7
+
+  # ── JOB 4: Deploy (Vercel) ──────────────────────────────────────────────────
+  deploy:
+    name: 🚀 Deploy Vercel
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Deploy apenas em push para main ou develop (não em PRs)
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull configurações do Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          vercel pull --yes \
+            --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} \
+            --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy para Vercel
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            # Deploy de produção
+            URL=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }})
+          else
+            # Deploy de preview (staging)
+            URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+          fi
+
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "✅ Deploy concluído: $URL"
+
+      - name: Comentar URL de preview em PRs
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 **Preview deployado:** ${{ steps.deploy.outputs.url }}`
+            })
+
+  # ── JOB 5: Security Audit ───────────────────────────────────────────────────
+  security:
+    name: 🔒 Auditoria de Segurança
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Roda em paralelo com lint/test — não bloqueia o pipeline
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: npm audit (vulnerabilidades conhecidas)
+        # Falha apenas para vulnerabilidades de severidade alta ou crítica
+        run: npm audit --audit-level=high
+        continue-on-error: true  # Relatório informativo, não bloqueia
+
+      - name: Verificar dependências desatualizadas
+        run: npm outdated || true
+
+      - name: Check por segredos expostos no código
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
