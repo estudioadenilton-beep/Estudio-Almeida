@@ -26,15 +26,15 @@ export default async function handler(req, res) {
   try {
     // Aplicar rate limit
     const { success, limit, remaining } = await ratelimit.limit(`ratelimit_criar_pix_${ip}`);
-    
+
     // Adicionar headers auxiliares
     res.setHeader('X-RateLimit-Limit', limit);
     res.setHeader('X-RateLimit-Remaining', remaining);
 
     if (!success) {
-      return res.status(429).json({ 
-        error: 'Too Many Requests', 
-        message: 'Você excedeu o limite de tentativas de criação de PIX. Aguarde alguns minutos.' 
+      return res.status(429).json({
+        error: 'Too Many Requests',
+        message: 'Você excedeu o limite de tentativas de criação de PIX. Aguarde alguns minutos.'
       });
     }
 
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.MERCADOPAGO_ACCESS_TOKEN || 'TEST-TOKEN'}`,
+        Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN || 'TEST-TOKEN'}`,
         'X-Idempotency-Key': `${Date.now()}-${ip}`,
       },
       body: JSON.stringify({
