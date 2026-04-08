@@ -27,8 +27,9 @@ const EsqueciSenha = () => {
   const onSubmit = async (data) => {
     setError(null);
     try {
+      const appUrl = (import.meta.env.VITE_APP_URL || window.location.origin).replace(/\/$/, '');
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(data.email, {
-        redirectTo: 'https://estudio-almeida.vercel.app/reset-password',
+        redirectTo: `${appUrl}/reset-password`,
       });
 
       if (resetError) {
