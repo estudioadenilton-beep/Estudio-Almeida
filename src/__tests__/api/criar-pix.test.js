@@ -1,23 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import waitForPix from '../../../api/criar-pix';
 
-// Mock do envio para Upstash
+// Mock do @upstash/ratelimit
 vi.mock('@upstash/ratelimit', () => {
   return {
-    Ratelimit: vi.fn().mockImplementation(() => ({
-      limit: vi.fn().mockResolvedValue({
-        success: true,
-        limit: 5,
-        remaining: 4,
-        reset: Date.now() + 600000,
-      }),
-    })),
-  };
-});
-vi.mock('@upstash/ratelimit', async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
     Ratelimit: class {
       static slidingWindow = vi.fn();
       constructor() {}
@@ -28,7 +14,7 @@ vi.mock('@upstash/ratelimit', async (importOriginal) => {
         return { success: true, limit: 5, remaining: 4, reset: Date.now() + 1000 };
       }
     }
-  }
+  };
 });
 
 vi.mock('@upstash/redis', () => ({
