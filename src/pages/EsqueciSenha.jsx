@@ -28,16 +28,18 @@ const EsqueciSenha = () => {
     setError(null);
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(data.email, {
-        redirectTo: `${import.meta.env.VITE_APP_URL || window.location.origin}/redefinir-senha`,
+        redirectTo: 'https://estudio-almeida.vercel.app/reset-password',
       });
 
       if (resetError) {
-        setError(resetError.message);
+        console.error('[EsqueciSenha] Erro do Supabase:', resetError);
+        setError('Não foi possível enviar o e-mail de recuperação. Verifique o endereço e tente novamente.');
         return;
       }
 
       setSuccess(true);
-    } catch {
+    } catch (err) {
+      console.error('[EsqueciSenha] Erro inesperado:', err);
       setError('Ocorreu um erro ao tentar enviar o e-mail. Tente novamente.');
     }
   };
